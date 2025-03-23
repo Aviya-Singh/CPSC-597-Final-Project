@@ -4,3 +4,4 @@
 # git add .
 # git commit -am "Message"
 # git remote set-url origin https://<username>:ghp_OHu8EQDhBOWOWj<PAT>@<github URL>
+# git push origin main
