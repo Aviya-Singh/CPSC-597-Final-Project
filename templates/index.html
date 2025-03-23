@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Diabetes Detection Application">
+  <meta name="author" content="Master's Project">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Diabetes Detection</title>
+  <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-core.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-pie.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --dark-color: #212529;
+      --light-color: #f8f9fa;
+      --danger-color: #e63946;
+      --success-color: #38b000;
+      --warning-color: #ffb703;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: var(--dark-color);
+      margin: 0;
+      padding: 0;
+    }
+    
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 2rem 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin: 0;
+    }
+    
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+    
+    .form-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+    
+    .form-card h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      font-size: 1.5rem;
+    }
+    
+    .input-group-text {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      border: 1px solid #ced4da;
+      transition: border-color 0.2s ease-in-out;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+    
+    .form-label {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .factor-card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .factor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .factor-card .factor-title {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .factor-card .factor-icon {
+      margin-right: 0.5rem;
+      color: var(--primary-color);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 0.75rem 2rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .result-box {
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .result-box.negative {
+      background-color: rgba(56, 176, 0, 0.1);
+      border: 2px solid var(--success-color);
+    }
+    
+    .result-box.positive {
+      background-color: rgba(230, 57, 70, 0.1);
+      border: 2px solid var(--danger-color);
+    }
+    
+    .result-box h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .result-box.negative h2 {
+      color: var(--success-color);
+    }
+    
+    .result-box.positive h2 {
+      color: var(--danger-color);
+    }
+    
+    .result-box p {
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    
+    .info-box {
+      background-color: rgba(67, 149, 239, 0.1);
+      border-left: 4px solid var(--accent-color);
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 4px;
+    }
+    
+    .info-box p {
+      margin-bottom: 0;
+      font-size: 0.9rem;
+    }
+    
+    .section-title {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .tooltip-icon {
+      color: var(--accent-color);
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    
+    .tooltip-text {
+      display: none;
+      position: absolute;
+      background-color: var(--dark-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      z-index: 100;
+      max-width: 250px;
+    }
+    
+    .tooltip-icon:hover + .tooltip-text {
+      display: block;
+    }
+    
+    .factors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 1rem;
+      }
+      
+      .factors-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    
+    .step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+    
+    .step:not(:last-child):after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background-color: #ddd;
+      z-index: -1;
+    }
+    
+    .step.active:not(:last-child):after {
+      background-color: var(--primary-color);
+    }
+    
+    .step-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #ddd;
+      color: white;
+      font-weight: bold;
+      margin-bottom: 8px;
+      z-index: 1;
+      position: relative;
+    }
+    
+    .step.active .step-icon {
+      background-color: var(--primary-color);
+    }
+    
+    .step-label {
+      font-size: 0.9rem;
+      color: #777;
+    }
+    
+    .step.active .step-label {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="header">
+      <h1><i class="fas fa-heartbeat me-2"></i>Diabetes Detection</h1>
+      <p>Early detection for better health outcomes</p>
+    </div>
+    
+    <div class="form-card">
+      <div class="progress-steps">
+        <div class="step active" id="step1">
+          <div class="step-icon">1</div>
+          <div class="step-label">Enter Details</div>
+        </div>
+        <div class="step" id="step2">
+          <div class="step-icon">2</div>
+          <div class="step-label">Analysis</div>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-icon">3</div>
+          <div class="step-label">Results</div>
+        </div>
+      </div>
+      
+      <div class="info-box mb-4">
+        <p><i class="fas fa-info-circle me-2"></i> This application uses machine learning to predict the likelihood of diabetes based on personal health factors. This is not a medical diagnosis and should be used for informational purposes only.</p>
+      </div>
+      
+      <form class="needs-validation" method="post" id="diabetesForm">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="age" class="form-label">Age</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+              <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age" required min="1" max="120">
+            </div>
+            <div class="invalid-feedback">
+              Please enter a valid age.
+            </div>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+              <select name="gender" class="form-select" id="gender" required>
+                <option value="">Select gender...</option>
+                <option value="1">Male</option>
+                <option value="0">Female</option>
+              </select>
+            </div>
+            <div class="invalid-feedback">
+              Please select a gender.
+            </div>
+          </div>
+        </div>
+        
+        <h3 class="section-title mt-4">Health Factors</h3>
+        <div class="info-box mb-4">
+          <p><i class="fas fa-lightbulb me-2"></i> Answer "Yes" if you've experienced any of these symptoms in the last 3 months. Consult a healthcare professional for medical advice.</p>
+        </div>
+        
+        <div class="factors-grid">
+          <!-- Polyuria -->
+          <div class="factor-card">
+            <div class="factor-title">
+              <span class="factor-icon"><i class="fas fa-tint"></i></span>
+              Polyuria
+              <i class="fas fa-question-circle tooltip-icon"></i>
+              <span class="tooltip-text">Excessive or frequent urination</span>
+            </div>
+            <select name="Polyuria" class="form-select" required>
+              <option value="">Select...</option>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          
+          <!-- Polydipsia -->
+          <div class="factor-card">
+            <div class="factor-title">
+              <span class="factor-icon"><i class="fas fa-glass-water"></i></span>
+              Polydipsia
+              <i class="fas fa-question-circle tooltip-icon"></i>
+              <span class="tooltip-text">Excessive thirst and increased fluid intake</span>
+            </div>
+            <select name="Polydipsia" class="form-select" required>
+              <option value="">Select...</option>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          
+          <!-- Sudden Weight Loss -->
+          <div class="factor-card">
+            <div class="factor-title">
+              <span class="factor-icon"><i class="fas fa-weight-scale"></i></span>
+              Sudden Weight Loss
+              <i class="fas fa-question-circle tooltip-icon"></i>
+              <span class="tooltip-text">Unexpected weight loss without changes in diet or exercise</span>
+            </div>
+            <select name="Weight" class="form-select" required>
+              <option value="">Select...</option>
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          
+          <!-- Weakness -->
+          <div class="factor-card">
+            <div class="factor-title">
+              <span class="factor-icon"><i class="fas fa-battery-quarter"></i></span>
+              Weakness
+              <i class="fas fa-question-circle tooltip-icon"></i>
+              <span class="tooltip-text">General feeling of fatigue and reduced strength</span>
+            </div>
+            <select name="Weakness" class="form-select" required>
+              <option value="">Select...</option>
+              <option value="1">Yes</option>
+              <option value="0">
